@@ -15,9 +15,9 @@ if [ -f "./electron/dist-frontend.tar" ]; then
     yarn build-nest
 else
     # 切换到 vue 目录，并执行 yarn build
-    cd ./vue && yarn && yarn build
+    cd ./vue && yarn && yarn build:frontend
     # 切换到 ../electron 目录，并执行 yarn build
-    cd ../electron && yarn && yarn build
+    cd ../electron && yarn && yarn build:electron
 fi
 
 
