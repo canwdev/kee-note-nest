@@ -109,6 +109,10 @@ function Service(config: any) {
           backendMessage = data.message
         }
       }
+
+      // extract backend message
+      backendMessage = response?.data?.message
+
       if (isToast) {
         if (backendMessage) {
           window.$notification.error({

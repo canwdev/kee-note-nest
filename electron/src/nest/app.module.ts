@@ -24,6 +24,7 @@ import {join} from 'path'
   controllers: [AppController],
   providers: [
     AppService,
+    // 开启全局请求加密
     {
       provide: APP_INTERCEPTOR,
       useClass: CryptInterceptor,
@@ -38,6 +39,7 @@ import {join} from 'path'
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
+    // 设置全局请求加密
     consumer.apply(CryptMiddleware).forRoutes('*')
   }
 }
