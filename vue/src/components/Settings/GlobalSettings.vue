@@ -63,7 +63,7 @@ export default defineComponent({
             key: 'calendarWeekIndex',
             store: settingsStore,
             type: StOptionType.SELECT,
-            selectOptions: [
+            options: [
               {
                 label: 'Locale Default',
                 value: -1,
@@ -106,7 +106,7 @@ export default defineComponent({
               key: 'ldTheme',
               store: settingsStore,
               type: StOptionType.MULTIPLE_SWITCH,
-              selectOptions: ldThemeOptions,
+              options: ldThemeOptions,
             },
             {
               label: 'Enable Global Css',

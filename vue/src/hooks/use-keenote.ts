@@ -157,6 +157,7 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
     await saveDatabaseAsync()
 
     keeStore.detailUuid = entry.uuid
+    globalEventBus.emit(GlobalEvents.REFRESH_ENTRY_LIST)
   }
 
   const handleCreateGroup = async () => {

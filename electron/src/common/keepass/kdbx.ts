@@ -35,7 +35,7 @@ function traverseGroupTree(groups: KdbxGroup[], counter = 0): GroupItem[] {
 
 function traverseGroupSearch(
   groups: KdbxGroup[],
-  searchFn: (entry: KdbxEntry) => boolean
+  searchFn: (entry: KdbxEntry) => boolean,
 ): KdbxEntry[] {
   const list: KdbxEntry[] = []
   if (!groups || groups.length === 0) return list
@@ -94,7 +94,7 @@ export class KdbxHelper {
 
     const credentials = new kdbxweb.Credentials(
       kdbxweb.ProtectedValue.fromString(password),
-      keyFileArrayBuffer
+      keyFileArrayBuffer,
     )
 
     const db = await kdbxweb.Kdbx.load(dbArrayBuffer, credentials)
@@ -118,7 +118,7 @@ export class KdbxHelper {
 
     const credentials = new kdbxweb.Credentials(
       kdbxweb.ProtectedValue.fromString(password),
-      keyFileArrayBuffer
+      keyFileArrayBuffer,
     )
 
     const db = kdbxweb.Kdbx.create(credentials, name || 'My new db')
@@ -418,8 +418,11 @@ export class KdbxHelper {
 
     entry.fields.set('Title', title)
 
-    // 48 is folder icon, 0 is entry icon, 44 is note icon
-    entry.icon = icon === undefined ? (group.icon === 48 ? 44 : group.icon) : icon
+    // 如果群组是文件夹图标，则设置默认entry为文件图标
+    // 48,49 is folder icon, 0 is entry icon, 44 is note icon
+    console.log('fix', icon, group.icon)
+    entry.icon =
+      icon === undefined ? (group.icon === 48 || group.icon === 49 ? 44 : group.icon) : icon
 
     if (bgColor) {
       entry.bgColor = bgColor
@@ -514,7 +517,7 @@ export class KdbxHelper {
   removeEntry(params) {
     const {uuid} = params || {}
     this.removeItems(
-      Array.isArray(uuid) ? uuid.map((id) => this.getEntry(id)) : this.getEntry(uuid)
+      Array.isArray(uuid) ? uuid.map((id) => this.getEntry(id)) : this.getEntry(uuid),
     )
   }
 

@@ -130,9 +130,9 @@ export default defineComponent({
                       quaternary: true,
                       size: 'small',
                     },
-                    {default: () => h(NIcon, {size: 20}, () => h(MoreVertical20Regular))}
+                    {default: () => h(NIcon, {size: 20}, () => h(MoreVertical20Regular))},
                   ),
-              }
+              },
             )
           },
           align: 'center',

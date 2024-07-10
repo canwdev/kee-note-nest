@@ -108,7 +108,7 @@ export default defineComponent({
       () => {
         keeStore.isChanged = true
       },
-      {deep: true}
+      {deep: true},
     )
 
     const handleSave = async () => {
