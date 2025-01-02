@@ -1,8 +1,8 @@
-import {StOptionItem} from '@/components/CommonUI/OptionUI/enum'
 import {NButton} from 'naive-ui'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import {getMyCryptKey, LsKeys} from '@/enum'
 import {RouterLink} from 'vue-router'
+import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
 
 export const useWebui = (mVisible) => {
   const handleMyCryptKeyChange = (value) => {
@@ -36,7 +36,7 @@ export const useWebui = (mVisible) => {
             },
             {
               default: () => 'Edit',
-            }
+            },
           ),
         },
         {
@@ -53,7 +53,7 @@ export const useWebui = (mVisible) => {
             },
             {
               default: () => 'Go',
-            }
+            },
           ),
         },
       ],

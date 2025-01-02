@@ -72,7 +72,7 @@ function Service(config: any) {
 
       return config
     },
-    (error) => Promise.reject(error)
+    (error) => Promise.reject(error),
   )
 
   // 响应 拦截器
@@ -91,10 +91,10 @@ function Service(config: any) {
         }
       } catch (error: any) {
         window.$message.error(error.message)
-        window.$loadingBar.error()
+        window.$loadingBar.done()
         return Promise.reject(error)
       }
-      window.$loadingBar.finish()
+      window.$loadingBar.done()
       return data
     },
     (error) => {
@@ -116,18 +116,16 @@ function Service(config: any) {
       if (isToast) {
         if (backendMessage) {
           window.$notification.error({
-            content: backendMessage,
-            meta: message,
-            duration: 3000,
-            keepAliveOnHover: true,
+            message: backendMessage,
+            title: message,
           })
         } else {
           window.$message.error(message)
         }
       }
-      window.$loadingBar.error()
+      window.$loadingBar.done()
       return Promise.reject(error)
-    }
+    },
   )
 
   return service

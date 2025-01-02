@@ -1,5 +1,4 @@
 <script lang="ts">
-import AutoRouterView from '@/components/CommonUI/AutoRouterView.vue'
 import GlobalSettings from '@/components/Settings/GlobalSettings.vue'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {kService} from '@/api'
@@ -9,10 +8,15 @@ import {useBeforeUnload, useUnSavedChanges} from '@/hooks/use-changed'
 import {isElectron} from '@/utils/backend'
 import electronService from '@/utils/backend/electron'
 import {useKeeNoteSaveClose} from '@/hooks/use-keenote'
+import {ElMessage, ElMessageBox, ElNotification} from 'element-plus'
+import NProgress from 'nprogress'
+
+NProgress.configure({
+  showSpinner: false,
+})
 
 export default defineComponent({
   components: {
-    AutoRouterView,
     GlobalSettings,
   },
   emits: ['themeChange'],
@@ -20,10 +24,10 @@ export default defineComponent({
     const settingsStore = useSettingsStore()
     const keeStore = useKeeStore()
 
-    window.$message = useMessage()
-    window.$notification = useNotification()
-    window.$dialog = useDialog()
-    window.$loadingBar = useLoadingBar()
+    window.$message = ElMessage
+    window.$dialog = ElMessageBox
+    window.$notification = ElNotification
+    window.$loadingBar = NProgress
 
     const {commonCloseDatabase} = useKeeNoteSaveClose()
 

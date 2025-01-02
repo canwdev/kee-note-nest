@@ -18,18 +18,30 @@ console.info(
   'background:transparent',
 )
 
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import 'element-plus/theme-chalk/dark/css-vars.css'
+// https://pictogrammers.com/library/mdi/
+import '@mdi/font/css/materialdesignicons.min.css'
+
 import {createApp} from 'vue'
 import 'normalize.css'
-import './styles/base.scss'
 import router from './router'
 import App from './App.vue'
 import {create} from 'naive-ui'
 import {createPinia} from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import '@/components/CanUI/packages/ViewPortWindow/theme/index.scss'
+import CanUI from '@/components/CanUI'
+import './styles/base.scss'
 
 const naive = create()
 
 const app = createApp(App)
+
+app.use(CanUI)
+app.use(ElementPlus)
+
 app.use(naive)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)

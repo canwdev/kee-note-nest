@@ -1,50 +1,37 @@
-<script lang="ts">
-import {defineComponent} from 'vue'
+<script setup lang="ts">
+import {h} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {getLocalStorageObject, LsKeys} from '@/enum'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {Delete16Filled, History24Regular} from '@vicons/fluent'
 import {useSettingsStore} from '@/store/settings'
 
-export default defineComponent({
-  name: 'HistoryDialog',
-  components: {
-    Delete16Filled,
+const props = withDefaults(
+  defineProps<{
+    visible: boolean
+  }>(),
+  {
+    visible: true,
   },
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  setup(props, {emit}) {
-    const mVisible = useModelWrapper(props, emit, 'visible')
-    const settingsStore = useSettingsStore()
+)
+const emit = defineEmits(['update:visible'])
 
-    const handleClearHistory = () => {
-      settingsStore.historyList = []
-    }
+const mVisible = useModelWrapper(props, emit, 'visible')
+const settingsStore = useSettingsStore()
 
-    const removeHistoryItem = (index: number) => {
-      const list = [...settingsStore.historyList]
-      list.splice(index, 1)
-      settingsStore.historyList = list
-    }
+const handleClearHistory = () => {
+  settingsStore.historyList = []
+}
 
-    return {
-      mVisible,
-      settingsStore,
-      removeHistoryItem,
-      dialogIconRender() {
-        return h(History24Regular)
-      },
-    }
-  },
-})
+const removeHistoryItem = (index: number) => {
+  const list = [...settingsStore.historyList]
+  list.splice(index, 1)
+  settingsStore.historyList = list
+}
 </script>
 
 <template>
-  <n-modal v-model:show="mVisible" preset="dialog" title="History" :icon="dialogIconRender">
+  <el-dialog v-model="mVisible" title="History">
     <n-list>
       <n-list-item>
         <n-thing title="Enable History" description="" />
@@ -81,5 +68,5 @@ export default defineComponent({
         </n-list>
       </n-list-item>
     </n-list>
-  </n-modal>
+  </el-dialog>
 </template>

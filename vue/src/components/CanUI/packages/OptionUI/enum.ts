@@ -11,6 +11,7 @@ export interface StOptionItem {
   type?: StOptionType
   // 传递给组件的自定义属性
   props?: any
+  itemProps?: any
   // 当type为 SELECT | MULTIPLE_SWITCH 时，选项的下拉数据
   options?: any[]
   // 是否已禁用
@@ -20,6 +21,7 @@ export interface StOptionItem {
   // 图标
   icon?: string
   iconRender?: any
+  iconClass?: any
   // 小标题
   subtitle?: string
   // 提示
@@ -29,6 +31,8 @@ export interface StOptionItem {
   cls?: string
   // action渲染函数
   actionRender?: any
+  // 整体渲染函数
+  render?: any
   // 点击item执行函数
   clickFn?: any
   // 隐藏展开按钮图标
@@ -45,6 +49,8 @@ export enum StOptionType {
   INPUT_NUMBER = 'input_number',
   COLOR_PICKER = 'color_picker',
   DYNAMIC_TAGS = 'dynamic_tags',
+  DATE_PICKER = 'date_picker',
+  BUTTON = 'button',
 }
 
 export type SwitchOption = {
@@ -53,22 +59,31 @@ export type SwitchOption = {
 }
 
 export const swatches = [
-  '#258292',
-  '#3A6EA5',
-  '#F0C869',
-  '#E81123',
-  '#e91e63',
+  // Material Design
+  '#F44336',
+  '#E91E63',
+  '#9C27B0',
+  '#673AB7',
+  '#3F51B5',
+  '#2196F3',
+  '#03A9F4',
+  '#00BCD4',
+  '#009688',
+  '#4CAF50',
+  '#8BC34A',
+  '#CDDC39',
+  '#FFEB3B',
+  '#FFC107',
+  '#FF9800',
+  '#FF5722',
+  '#795548',
+  '#9e9e9e',
+  '#607d8b',
+
   '#FFFFFF',
   '#000000',
-  '#007aff',
-  '#a2845e',
-  '#8e8e93',
-  '#28cd41',
-  '#5856d6',
-  '#ff9500',
-  '#ff2d55',
-  '#af52de',
-  '#ff3b30',
-  '#5ac8fa',
-  '#ffcc00',
+
+  // Windows Blue
+  '#3A6EA5',
+  '#F0C869',
 ]

@@ -2,7 +2,7 @@
 import {defineComponent, PropType} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 
-import {SwitchOption} from '@/components/CommonUI/OptionUI/enum'
+import {SwitchOption} from '../enum'
 
 export default defineComponent({
   name: 'RectSwitch',
@@ -17,6 +17,14 @@ export default defineComponent({
         return []
       },
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    isLabelHtml: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props, {emit}) {
     const mValue = useModelWrapper(props, emit)
@@ -28,7 +36,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="rect-switch">
+  <div class="rect-switch" :class="{disabled}">
     <div
       v-for="item in options"
       :key="item.value"
@@ -36,7 +44,10 @@ export default defineComponent({
       @click="mValue = item.value"
       :class="{active: item.value === mValue}"
     >
-      {{ item.label }}
+      <div v-if="isLabelHtml" v-html="item.label"></div>
+      <template v-else>
+        {{ item.label || item.value }}
+      </template>
     </div>
   </div>
 </template>
@@ -49,13 +60,24 @@ export default defineComponent({
   border-radius: 4px;
   padding: 2px;
   border: 1px solid $color_border;
+  flex-wrap: wrap;
+
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed !important;
+    .r-item {
+      pointer-events: none;
+    }
+  }
 
   .r-item {
     border-radius: 4px;
-    padding: 5px 15px;
-    font-size: 12px;
+    padding: 4px 10px;
+    font-size: 14px;
     transition: all 0.3s;
     cursor: pointer;
+    line-height: 1.3;
+    text-align: center;
 
     &.active {
       background-color: $primary;

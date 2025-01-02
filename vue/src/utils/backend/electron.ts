@@ -8,16 +8,14 @@ export default {
         // 模拟 axios 的blob文件下载
         res = new Blob([res])
       }
-      window.$loadingBar.finish()
+      window.$loadingBar.done()
       return res
     } catch (error: any) {
       window.$notification.error({
-        content: error.message,
-        meta: 'Backend Message',
-        duration: 3000,
-        keepAliveOnHover: true,
+        message: error.message,
+        title: 'Backend Message',
       })
-      window.$loadingBar.error()
+      window.$loadingBar.done()
       return Promise.reject(error)
     }
   },

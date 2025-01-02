@@ -71,13 +71,6 @@ export default defineComponent({
       }
       const data = await userProfile()
 
-      // window.$notification.success({
-      //   content: 'Congrats🎉，you have successfully logged in！',
-      //   meta: JSON.stringify(data),
-      //   duration: 3000,
-      //   keepAliveOnHover: true,
-      // })
-
       await router.replace({
         name: 'NoteView',
         query,

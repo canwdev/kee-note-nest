@@ -177,10 +177,8 @@ export default defineComponent({
       await writable.write(str)
       await writable.close()
 
-      window.$dialog.success({
-        title: 'Saved!',
-        content: 'Please copy and paste file absolute path.',
-        positiveText: 'OK',
+      window.$dialog.alert('Please copy and paste file absolute path.', 'Saved!', {
+        type: 'success',
       })
     }
 

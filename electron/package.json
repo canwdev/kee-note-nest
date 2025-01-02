@@ -1,7 +1,7 @@
 {
   "name": "kee-note",
   "appName": "KeeNote",
-  "version": "4.2.4",
+  "version": "4.3.0",
   "description": "An encrypted note editor powered by KeePass.",
   "license": "GPLV3",
   "author": "canwdev",
@@ -30,17 +30,14 @@
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
     "copyfiles": "^2.4.1",
-    "electron": "^20.3.12",
-    "electron-builder": "^24.9.1",
+    "electron": "15.5.7",
+    "electron-builder": "^25.1.8",
     "eslint": "8.22.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.0.0",
     "nodemon": "^3.0.2",
     "prettier": "^2.8.8",
     "typescript": "^5.1.6"
-  },
-  "optionalDependencies": {
-    "electron": "*"
   },
   "dependencies": {
     "@electron/remote": "^2.1.1",

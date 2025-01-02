@@ -5,7 +5,7 @@ import {useMainStore} from '@/store/main'
 import {LsKeys} from '@/enum'
 import {createOrFindStyleNode} from '@/utils/dom'
 import {getSystemIsDarkMode, hexToRgb} from '@/utils/color'
-import {GlobalThemeOverrides} from 'naive-ui'
+import {useElementPlusTheme} from '@/hooks/use-element-plus-theme'
 
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()
@@ -34,10 +34,29 @@ export const useGlobalTheme = () => {
 
   const isAppDarkMode = computed(() => mainStore.isAppDarkMode)
 
+  watch(
+    isAppDarkMode,
+    (val) => {
+      if (val) {
+        document.body.classList.add('_dark')
+
+        // Element Plus 暗黑模式 https://element-plus.org/zh-CN/guide/dark-mode.html
+        document.documentElement.classList.add('dark')
+      } else {
+        document.body.classList.remove('_dark')
+        document.documentElement.classList.remove('dark')
+      }
+    },
+    {immediate: true},
+  )
+
+  const {changeTheme} = useElementPlusTheme(settingsStore.themeColor)
+
   const updateThemeColor = () => {
     const themeColor = settingsStore.themeColor
     // console.log({themeColor})
     if (themeColor) {
+      changeTheme(themeColor)
       try {
         const res = hexToRgb(themeColor)
         if (!res) {
@@ -85,23 +104,8 @@ export const useGlobalTheme = () => {
     updateThemeColor()
   })
 
-  // NaiveUI GlobalThemeOverrides
-  const themeOverrides = computed<GlobalThemeOverrides>(() => {
-    const primaryColor = settingsStore.themeColor || '#258292'
-
-    return {
-      common: {
-        primaryColor,
-        primaryColorHover: primaryColor,
-        primaryColorPressed: primaryColor,
-        primaryColorSuppl: primaryColor,
-      },
-    } as GlobalThemeOverrides
-  })
-
   return {
     isAppDarkMode,
-    themeOverrides,
   }
 }
 

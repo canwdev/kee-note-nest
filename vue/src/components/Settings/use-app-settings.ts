@@ -1,10 +1,10 @@
 import {NButton} from 'naive-ui'
-import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {isElectron} from '@/utils/backend'
 import {marked} from 'marked'
 import {useMainStore} from '@/store/main'
 import {useSettingsStore} from '@/store/settings'
 import {electronCommonApi} from '@/api/electron'
+import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
 
 export const useAppSettings = () => {
   const mainStore = useMainStore()
@@ -30,25 +30,14 @@ export const useAppSettings = () => {
             ? serverLogMessage.value
             : 'Run KeeNote on a webpage!',
           key: 'enable_server',
-          actionRender: h(
-            NButton,
-            {
-              type: 'primary',
-              size: 'small',
-              onClick: async () => {
-                await doToggleServer({toggle: !mainStore.isServerRunning})
-              },
-              disabled: isLoading.value,
+          type: StOptionType.BUTTON,
+          props: {
+            onClick: async () => {
+              await doToggleServer({toggle: !mainStore.isServerRunning})
             },
-            {
-              default: () => {
-                if (isLoading.value) {
-                  return '...'
-                }
-                return mainStore.isServerRunning ? 'Stop' : 'Start'
-              },
-            },
-          ),
+            disabled: isLoading.value,
+          },
+          value: isLoading.value ? '...' : mainStore.isServerRunning ? 'Stop' : 'Start',
         },
       ],
     }
@@ -71,13 +60,9 @@ export const useAppSettings = () => {
       await doToggleServer({getStatusOnly: true})
       if (mainStore.isServerRunning) {
         window.$notification.success({
-          content: 'Server auto started!',
-          meta: () =>
-            h('div', {
-              innerHTML: serverLogMessage.value,
-            }),
-          duration: 3000,
-          keepAliveOnHover: true,
+          title: 'Server auto started!',
+          dangerouslyUseHTMLString: true,
+          message: serverLogMessage.value,
         })
       }
     }

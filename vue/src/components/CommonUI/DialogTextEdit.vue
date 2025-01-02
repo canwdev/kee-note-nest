@@ -1,9 +1,11 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
+// import VueMonaco from '@/components/CanUI/packages/VueMonaco/index.vue'
 
 export default defineComponent({
   name: 'DialogTextEdit',
+  // components: {VueMonaco},
   props: {
     visible: {
       type: Boolean,
@@ -36,7 +38,7 @@ export default defineComponent({
       default: 'text',
     },
   },
-  emits: ['onSave'],
+  emits: ['onSave', 'update:modelValue', 'update:visible'],
   setup(props, {emit}) {
     const {text} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
@@ -48,7 +50,7 @@ export default defineComponent({
       (val) => {
         editingText.value = val
       },
-      {immediate: true}
+      {immediate: true},
     )
 
     watch(mVisible, (val) => {
@@ -72,37 +74,40 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-modal
-    style="width: 700px"
-    preset="dialog"
-    negative-text="Cancel"
-    positive-text="OK"
+  <el-dialog
+    draggable
+    width="700"
+    top="10vh"
     :title="title"
     @positive-click="handleSave"
-    @negative-click="mVisible = false"
-    @close="mVisible = false"
-    :show="mVisible"
-    :clearable="clearable"
+    v-model="mVisible"
+    :close-on-click-modal="false"
   >
     <template v-if="mVisible">
-      <n-input
+      <!--<VueMonaco-->
+      <!--  ref="inputRef"-->
+      <!--  v-if="isTextarea"-->
+      <!--  v-model="editingText"-->
+      <!--  language="json"-->
+      <!--  style="height: 500px"-->
+      <!--/>-->
+      <el-input
         ref="inputRef"
-        type="textarea"
-        v-if="isTextarea"
-        v-model:value="editingText"
-        style="height: 500px"
-      />
-      <n-input
-        ref="inputRef"
-        v-else
         :type="type"
-        v-model:value="editingText"
+        v-model="editingText"
         class="font-code"
         :rows="isTextarea ? 25 : null"
         :placeholder="placeholder"
         autofocus
         :clearable="clearable"
-      ></n-input>
+      ></el-input>
     </template>
-  </n-modal>
+
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="mVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="handleSave()"> Save </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>

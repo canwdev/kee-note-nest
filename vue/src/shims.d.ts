@@ -1,13 +1,12 @@
-import {MessageApiInjection} from 'naive-ui/es/message/src/MessageProvider'
-import {DialogApiInjection} from 'naive-ui/es/dialog/src/DialogProvider'
-import {NotificationApiInjection} from 'naive-ui/es/notification/src/NotificationProvider'
+import {ElMessage, ElMessageBox, ElNotification} from 'element-plus'
+import NProgress from 'nprogress'
 
 declare global {
   interface Window {
-    $message: MessageApiInjection
-    $notification: NotificationApiInjection
-    $dialog: DialogApiInjection
-    $loadingBar: LoadingBarApiInjection
+    $message: ElMessage
+    $dialog: ElMessageBox
+    $notification: ElNotification
+    $loadingBar: NProgress
     $electronAPI: any
   }
 }

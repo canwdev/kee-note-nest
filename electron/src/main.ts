@@ -34,7 +34,7 @@ function createWindow() {
   if (isDev) {
     mainWindow.loadURL('http://localhost:3030/')
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
   } else {
     mainWindow.loadFile(path.join(__dirname, '../dist-frontend/index.html'))
   }

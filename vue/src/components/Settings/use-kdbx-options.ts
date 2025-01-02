@@ -1,4 +1,3 @@
-import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {NButton, NSpace} from 'naive-ui'
 import {useKeeStore} from '@/store/kee-store'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
@@ -8,6 +7,7 @@ import {isElectron} from '@/utils/backend'
 import {kService} from '@/api'
 import {useSettingsStore} from '@/store/settings'
 import {electronCommonApi} from '@/api/electron'
+import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
 
 const KDBX_LATEST_VERSION = 4
 

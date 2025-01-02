@@ -1,17 +1,49 @@
-
 .login-view {
-  height: 100%;
+  padding-top: 30vh;
+  padding-bottom: 10vh;
+  .card-wrap {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-  :deep(.n-layout-scroll-container) {
+  .title-wrapper {
     display: flex;
     align-items: center;
-    justify-content: center;
-    @media screen and (max-height: 500px) {
-      align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    button {
+      width: 20px;
     }
+    .mdi {
+      font-size: 20px;
+    }
+
   }
-  .card-wrap {
-    max-width: 500px;
-    margin: 20px;
+
+  .login-title {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .btn-login {
+    background-color: $primary;
+    color: white;
+  }
+
+  .login-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .el-form-item__content {
+    display: flex;
+    gap: 4px;
+    .el-input {
+      flex: 1;
+    }
   }
 }
