@@ -11,16 +11,12 @@ const locale =
 moment.locale(locale)
 */
 
-import {CalendarLtr20Regular, ChevronLeft20Filled, ChevronRight20Filled} from '@vicons/fluent'
 import {useSettingsStore} from '@/store/settings'
+import MonthPicker from '@/components/CanUI/packages/CalendarLite/MonthPicker.vue'
 
 export default defineComponent({
   name: 'CalendarLite',
-  components: {
-    ChevronLeft20Filled,
-    CalendarLtr20Regular,
-    ChevronRight20Filled,
-  },
+  components: {MonthPicker},
   props: {
     initDate: {
       type: Date,
@@ -48,7 +44,7 @@ export default defineComponent({
         setTimeout(() => {
           generateCalendar()
         })
-      }
+      },
     )
 
     // 获取当前地区的周的第一天
@@ -97,7 +93,6 @@ export default defineComponent({
     const goMonth = (val) => {
       iDate.value = moment(val)
       generateCalendar()
-      isShowPopover.value = false
     }
 
     const goPrevMonth = () => {
@@ -157,33 +152,17 @@ export default defineComponent({
         </span>
       </div>
       <div class="h-right">
-        <template v-if="showSwitch">
-          <n-button quaternary @click="goPrevMonth">
-            <n-icon size="20">
-              <ChevronLeft20Filled />
-            </n-icon>
-          </n-button>
-          <n-popover v-model:show="isShowPopover" placement="bottom" trigger="click">
-            <template #trigger>
-              <n-button quaternary>
-                <n-icon size="20">
-                  <CalendarLtr20Regular />
-                </n-icon>
-              </n-button>
-            </template>
-            <n-date-picker
-              :default-value="Number(iDate)"
-              panel
-              type="month"
-              @confirm="(val) => goMonth(val)"
-            />
-          </n-popover>
-          <n-button quaternary @click="goNextMonth">
-            <n-icon size="20">
-              <ChevronRight20Filled />
-            </n-icon>
-          </n-button>
-        </template>
+        <div class="flex-row-center-gap" v-if="showSwitch">
+          <button class="btn-no-style" @click="goPrevMonth">
+            <span class="mdi mdi-chevron-left"></span>
+          </button>
+
+          <MonthPicker :model-value="iDate" @update:model-value="(val) => goMonth(val)" />
+
+          <button class="btn-no-style" @click="goNextMonth">
+            <span class="mdi mdi-chevron-right"></span>
+          </button>
+        </div>
       </div>
     </div>
     <div class="cal-main-wrap">
@@ -218,6 +197,12 @@ export default defineComponent({
   min-height: 300px;
   height: 100%;
   max-width: 1200px;
+
+  .btn-no-style {
+    .mdi {
+      font-size: 20px;
+    }
+  }
 
   .cal-header {
     display: flex;

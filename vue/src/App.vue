@@ -53,7 +53,6 @@ export default defineComponent({
       NConfigProvider,
       {
         theme: this.isAppDarkMode ? darkTheme : null,
-        'theme-overrides': this.themeOverrides,
       },
       {
         default: () =>

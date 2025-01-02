@@ -269,7 +269,7 @@ const handleSubmit = () => {
       v-model:visible="isShowHistoryDialog"
     />
 
-    <el-card class="card-wrap" :shadow="false">
+    <el-card class="card-wrap">
       <div class="title-wrapper">
         <button
           class="btn-no-style"

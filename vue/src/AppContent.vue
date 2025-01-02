@@ -12,7 +12,7 @@ import {ElMessage, ElMessageBox, ElNotification} from 'element-plus'
 import NProgress from 'nprogress'
 
 NProgress.configure({
-  showSpinner: false,
+  showSpinner: true,
 })
 
 export default defineComponent({

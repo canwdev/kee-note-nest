@@ -12,35 +12,26 @@ import CalendarView from '@/components/NoteViews/Calendar/CalendarView.vue'
 import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
 import DialogIconChooser from '@/components/NoteViews/Dialogs/DialogIconChooser.vue'
 import {useMainStore} from '@/store/main'
-import {
-  Settings20Filled,
-  LockClosed20Filled,
-  Save20Regular,
-  Search20Filled,
-  LockShield20Regular,
-  Key20Regular,
-} from '@vicons/fluent'
+
 import {importEntryListJson} from '@/utils/export-import'
 import {useSettingsStore} from '@/store/settings'
 import {useKeeNoteGroupManage, useKeeNoteSaveClose} from '@/hooks/use-keenote'
 import DetailView from '@/views/Note/DetailView.vue'
 import {checkDatabaseIsOpen} from '@/api/keepass'
 import DialogSearch from '@/components/NoteViews/DataSearch/DialogSearch.vue'
+import DropdownMenu from '@/components/CanUI/packages/OptionUI/Tools/DropdownMenu.vue'
+import FoldableSidebarLayout from '@/components/CanUI/packages/Layouts/FoldableSidebarLayout.vue'
 
 export default defineComponent({
   name: 'NoteLayout',
   components: {
+    FoldableSidebarLayout,
+    DropdownMenu,
     DialogSearch,
     DetailView,
     ListView,
     CalendarView,
     DialogIconChooser,
-    Settings20Filled,
-    Search20Filled,
-    LockClosed20Filled,
-    Save20Regular,
-    LockShield20Regular,
-    Key20Regular,
   },
   setup() {
     const router = useRouter()
@@ -228,8 +219,7 @@ export default defineComponent({
         return [
           ...getMenuOptions(null),
           {
-            type: 'divider',
-            label: 'd1',
+            split: true,
           },
           ...options,
         ]
@@ -295,121 +285,87 @@ export default defineComponent({
 
 <template>
   <div class="note-layout">
-    <n-layout class="layout-inner-root">
-      <n-layout-header bordered>
-        <n-space align="center" class="nav-header-content" justify="space-between">
-          <n-space align="center" size="small">
-            <n-icon class="logo-icon" size="20">
-              <LockClosed20Filled />
-            </n-icon>
-            <span class="note-title"> KeeNote {{ keeStore.isNotSave ? '*' : '' }}</span>
+    <div class="nav-header-content">
+      <div class="flex-row-center-gap">
+        <span class="logo-icon mdi mdi-lock"> </span>
+        <span class="note-title"> KeeNote {{ keeStore.isNotSave ? '*' : '' }}</span>
 
-            <n-button
-              strong
-              secondary
-              v-if="keeStore.isNotSave"
-              type="primary"
-              size="small"
-              @click="commonSaveDatabase"
-              title="Save (ctrl+s)"
-            >
-              <n-icon size="20">
-                <Save20Regular />
-              </n-icon>
-            </n-button>
-          </n-space>
-
-          <n-space size="small" align="center">
-            <n-button
-              quaternary
-              size="small"
-              :title="keeStore.isDbOpened ? 'Lock' : 'Unlock'"
-              @click="handleToggleLock"
-            >
-              <n-icon size="20">
-                <LockShield20Regular v-if="keeStore.isDbOpened" />
-                <Key20Regular v-else />
-              </n-icon>
-            </n-button>
-
-            <n-button quaternary size="small" title="Search" @click="isShowSearchDialog = true">
-              <n-icon size="20"> <Search20Filled /> </n-icon>
-            </n-button>
-
-            <n-dropdown
-              :options="menuOptions"
-              key-field="label"
-              placement="bottom-start"
-              trigger="hover"
-            >
-              <n-badge :show="mainStore.isServerRunning" dot type="success" :offset="[-4, 5]">
-                <n-button quaternary size="small" title="Menu">
-                  <n-icon size="20"> <Settings20Filled /> </n-icon>
-                </n-button>
-              </n-badge>
-            </n-dropdown>
-          </n-space>
-        </n-space>
-      </n-layout-header>
-
-      <n-layout has-sider>
-        <n-layout-sider
-          collapse-mode="transform"
-          :collapsed-width="0"
-          :width="220"
-          show-trigger="bar"
-          trigger-style="width: 22px;right: -12px;"
-          collapsed-trigger-style="width: 22px;right: -12px;"
-          bordered
-          :collapsed="settingsStore.isSidebarCollapsed"
-          @updateCollapsed="(val) => (settingsStore.isSidebarCollapsed = val)"
+        <button
+          v-if="keeStore.isNotSave"
+          @click="commonSaveDatabase"
+          title="Save (ctrl+s)"
+          class="btn-no-style"
         >
-          <n-scrollbar x-scrollable>
-            <n-tree
-              style="min-width: 150px"
-              block-line
-              :data="groupTree"
-              key-field="uuid"
-              label-field="title"
-              children-field="children"
-              class="content-padding"
-              selectable
-              default-expand-all
-              draggable
-              :cancelable="false"
-              :node-props="nodeProps"
-              @drop="handleTreeDrop"
-              :render-prefix="renderPrefix"
-              v-model:selected-keys="selectedKeys"
-            />
-          </n-scrollbar>
+          <span class="mdi mdi-content-save"></span>
+        </button>
+      </div>
 
-          <DialogIconChooser
-            v-model:visible="isShowChooseIconModal"
-            @onSelectIcon="handleSelectIcon"
+      <div class="flex-row-center-gap">
+        <button
+          class="btn-no-style"
+          :title="keeStore.isDbOpened ? 'Lock' : 'Unlock'"
+          @click="handleToggleLock"
+        >
+          <span v-if="keeStore.isDbOpened" class="mdi mdi-shield-lock"></span>
+          <span class="mdi mdi-key" v-else></span>
+        </button>
+
+        <button class="btn-no-style" title="Search" @click="isShowSearchDialog = true">
+          <span class="mdi mdi-magnify"></span>
+        </button>
+
+        <DropdownMenu :options="menuOptions">
+          <el-badge :hidden="!mainStore.isServerRunning" is-dot type="success" :offset="[-4, 5]">
+            <button class="btn-no-style" title="Menu">
+              <span class="mdi mdi-cog"></span>
+            </button>
+          </el-badge>
+        </DropdownMenu>
+      </div>
+    </div>
+    <FoldableSidebarLayout v-model="settingsStore.isSidebarCollapsed">
+      <template #sidebar>
+        <n-scrollbar x-scrollable>
+          <n-tree
+            style="min-width: 150px"
+            block-line
+            :data="groupTree"
+            key-field="uuid"
+            label-field="title"
+            children-field="children"
+            class="content-padding"
+            selectable
+            default-expand-all
+            draggable
+            :cancelable="false"
+            :node-props="nodeProps"
+            @drop="handleTreeDrop"
+            :render-prefix="renderPrefix"
+            v-model:selected-keys="selectedKeys"
           />
-        </n-layout-sider>
+        </n-scrollbar>
+      </template>
+      <template #default>
+        <template v-if="groupTree.length">
+          <CalendarView v-if="settingsStore.isCalendarView" />
+          <ListView v-else />
+        </template>
+      </template>
+    </FoldableSidebarLayout>
 
-        <n-dropdown
-          trigger="manual"
-          placement="bottom-start"
-          :show="showRightMenu"
-          :options="rightMenuOptions"
-          :x="xRef"
-          :y="yRef"
-          @select="handleSelect"
-          key-field="label"
-          :on-clickoutside="handleClickOutside"
-        />
+    <DialogIconChooser v-model:visible="isShowChooseIconModal" @onSelectIcon="handleSelectIcon" />
 
-        <n-layout-content>
-          <template v-if="groupTree.length">
-            <CalendarView v-if="settingsStore.isCalendarView" />
-            <ListView v-else />
-          </template>
-        </n-layout-content>
-      </n-layout>
-    </n-layout>
+    <n-dropdown
+      trigger="manual"
+      placement="bottom-start"
+      :show="showRightMenu"
+      :options="rightMenuOptions"
+      :x="xRef"
+      :y="yRef"
+      @select="handleSelect"
+      key-field="label"
+      :on-clickoutside="handleClickOutside"
+    />
   </div>
 
   <transition name="fade-scale">
@@ -422,33 +378,52 @@ export default defineComponent({
 <style lang="scss" scoped>
 .note-layout {
   height: 100%;
-  .layout-inner-root {
-    height: 100%;
-    :deep(.n-layout-scroll-container) {
-      display: flex;
-      flex-direction: column;
-    }
-  }
-
-  .logo-icon {
-    border: 2px solid $primary;
-    border-radius: 50%;
-    color: $primary;
-    transform: translateY(2px);
-  }
-
-  .note-title {
-    @media screen and (max-width: 500px) {
-      display: none;
-    }
-  }
+  display: flex;
+  flex-direction: column;
 
   .nav-header-content {
-    width: 100%;
-    height: 100%;
     padding: 8px 24px;
     box-sizing: border-box;
     user-select: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid $color_border;
+
+    .btn-no-style {
+      .mdi {
+        font-size: 24px;
+      }
+    }
+
+    .flex-row-center-gap {
+      gap: 16px;
+    }
+
+    .logo-icon {
+      border: 2px solid $primary;
+      border-radius: 50%;
+      color: $primary;
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .note-title {
+      @media screen and (max-width: 500px) {
+        display: none;
+      }
+    }
+  }
+
+  .foldable-sidebar-layout {
+    flex: 1;
+    box-shadow: none;
   }
 }
 </style>

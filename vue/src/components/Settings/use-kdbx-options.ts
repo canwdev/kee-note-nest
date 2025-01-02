@@ -1,13 +1,11 @@
-import {NButton, NSpace} from 'naive-ui'
 import {useKeeStore} from '@/store/kee-store'
-import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import {changeCredentials, createCredentialKey, maintenanceDatabase} from '@/api/keepass'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
-import {kService} from '@/api'
 import {useSettingsStore} from '@/store/settings'
 import {electronCommonApi} from '@/api/electron'
 import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
+import {showInputPrompt} from '@/components/CanUI/functions/input-prompt'
 
 const KDBX_LATEST_VERSION = 4
 
@@ -41,90 +39,69 @@ export const useKdbxOptions = (mVisible) => {
           label: 'Database Info',
           subtitle: `KDBX Version: ${dbVersion}`,
           key: 'info',
-          actionRender: h(
-            NSpace,
-            {size: 'small'},
-            {
-              default: () => [
-                h(
-                  NButton,
-                  {
-                    type: 'primary',
-                    size: 'small',
-                    onClick: async () => {
-                      window.$dialog.info({
-                        title: 'Database Info',
-                        content: () =>
-                          h('textarea', {
-                            cols: 46,
-                            rows: 20,
-                            class: 'font-code',
-                            readonly: true,
-                            value: JSON.stringify(keeStore.dbInfo, null, 2),
-                          }),
-                      })
-                    },
-                  },
-                  {
-                    default: () => 'View',
-                  },
-                ),
-              ],
+          type: StOptionType.BUTTON,
+          value: 'View',
+          props: {
+            onClick: () => {
+              window.$dialog({
+                title: 'Database Info',
+                message: h('textarea', {
+                  cols: 46,
+                  rows: 20,
+                  class: 'font-code',
+                  readonly: true,
+                  value: JSON.stringify(keeStore.dbInfo, null, 2),
+                }),
+              })
             },
-          ),
+          },
         },
         {
           label: 'Database Password',
           key: 'change_password',
-          actionRender: h(
-            NButton,
-            {
-              type: 'primary',
-              size: 'small',
-              onClick: async () => {
-                const password = await showInputPrompt({
-                  title: '1. Input new database password',
-                  placeholder: '',
-                  value: '',
-                  type: 'password',
-                })
-                const password2 = await showInputPrompt({
-                  title: '2. Confirm new password',
-                  placeholder: '',
-                  value: '',
-                  type: 'password',
-                  validateFn: (value) => {
-                    if (value !== password) {
-                      return 'password not match'
-                    }
-                  },
-                })
-                if (password2) {
-                  await changeCredentials({password: password2})
-                  window.$message.success('Database password changed!')
-                  globalEventBus.emit(GlobalEvents.CLOSE_DATABASE)
-                  mVisible.value = false
-                }
-              },
+          type: StOptionType.BUTTON,
+          value: 'Change...',
+          props: {
+            onClick: async () => {
+              const password = await showInputPrompt({
+                title: '1. Input new database password',
+                placeholder: '',
+                value: '',
+                type: 'password',
+              })
+              const password2 = await showInputPrompt({
+                title: '2. Confirm new password',
+                placeholder: '',
+                value: '',
+                type: 'password',
+                validateFn: (value) => {
+                  if (value !== password) {
+                    return 'password not match'
+                  }
+                },
+              })
+              if (password2) {
+                await changeCredentials({password: password2})
+                window.$message.success('Database password changed!')
+                globalEventBus.emit(GlobalEvents.CLOSE_DATABASE)
+                mVisible.value = false
+              }
             },
-            {
-              default: () => 'Change',
-            },
-          ),
+          },
         },
         isElectron
           ? {
               label: 'Database Key',
               key: 'change_key',
               actionRender: h(
-                NSpace,
-                {size: 'small'},
+                'div',
+                {class: 'flex-row-center-gap'},
                 {
                   default: () => [
                     h(
-                      NButton,
+                      'button',
                       {
-                        size: 'small',
+                        class: 'vp-button',
                         onClick: async () => {
                           const {filePath} = await electronCommonApi.electronOpenSaveDialog({
                             defaultPath: 'new.key',
@@ -142,15 +119,12 @@ export const useKdbxOptions = (mVisible) => {
                           window.$message.success('Key file created: ' + filePath)
                         },
                       },
-                      {
-                        default: () => 'Create',
-                      },
+                      'Create',
                     ),
                     h(
-                      NButton,
+                      'button',
                       {
-                        type: 'primary',
-                        size: 'small',
+                        class: 'vp-button primary',
                         onClick: async () => {
                           const {filePaths} = await electronCommonApi.electronOpenFileDialog({
                             filters: [
@@ -164,25 +138,21 @@ export const useKdbxOptions = (mVisible) => {
                             const keyPath = filePaths[0]
                             console.log(keyPath)
 
-                            window.$dialog.warning({
-                              title: 'Confirm change database key?',
-                              content: keyPath,
-                              positiveText: 'OK',
-                              negativeText: 'Cancel',
-                              onPositiveClick: async () => {
+                            window.$dialog
+                              .confirm(keyPath, 'Confirm change database key?', {
+                                type: 'warning',
+                              })
+                              .then(async () => {
                                 await changeCredentials({keyPath})
                                 window.$message.success('Database key changed!')
                                 globalEventBus.emit(GlobalEvents.CLOSE_DATABASE)
                                 mVisible.value = false
-                              },
-                              onNegativeClick: () => {},
-                            })
+                              })
+                              .catch()
                           }
                         },
                       },
-                      {
-                        default: () => 'Change',
-                      },
+                      'Change...',
                     ),
                   ],
                 },
@@ -195,25 +165,29 @@ export const useKdbxOptions = (mVisible) => {
               subtitle: `KDBX Version: ${dbVersion}`,
               key: 'maintenance',
               actionRender: h(
-                NSpace,
-                {size: 'small'},
+                'div',
+                {class: 'flex-row-center-gap'},
                 {
                   default: () => [
                     h(
-                      NButton,
+                      'button',
                       {
-                        size: 'small',
+                        class: 'vp-button danger',
                         onClick: async () => {
                           // 升级或降级数据库版本
                           const action = isUpgrade ? 'upgrade' : 'downgrade'
-                          window.$dialog.warning({
-                            title: `Maintenance`,
-                            content: `Confirm ${action} database to version ${
-                              isUpgrade ? dbVersion + 1 : dbVersion - 1
-                            }?`,
-                            positiveText: 'OK',
-                            negativeText: 'Cancel',
-                            onPositiveClick: async () => {
+
+                          window.$dialog
+                            .confirm(
+                              `Confirm ${action} database to version ${
+                                isUpgrade ? dbVersion + 1 : dbVersion - 1
+                              }?`,
+                              `Maintenance`,
+                              {
+                                type: 'warning',
+                              },
+                            )
+                            .then(async () => {
                               const params: any = {}
 
                               if (isUpgrade) {
@@ -226,9 +200,8 @@ export const useKdbxOptions = (mVisible) => {
                               window.$message.success(`Database ${action} success!`)
                               globalEventBus.emit(GlobalEvents.CLOSE_DATABASE)
                               mVisible.value = false
-                            },
-                            onNegativeClick: () => {},
-                          })
+                            })
+                            .catch()
                         },
                       },
                       {
@@ -236,26 +209,28 @@ export const useKdbxOptions = (mVisible) => {
                       },
                     ),
                     h(
-                      NButton,
+                      'button',
                       {
-                        type: 'error',
-                        size: 'small',
+                        class: 'vp-button primary',
                         onClick: async () => {
                           // 清理数据库
-                          window.$dialog.warning({
-                            title: `Cleanup`,
-                            content: `Confirm cleanup database: historyRules, customIcons, binaries?`,
-                            positiveText: 'OK',
-                            negativeText: 'Cancel',
-                            onPositiveClick: async () => {
+
+                          window.$dialog
+                            .confirm(
+                              `Confirm cleanup database: historyRules, customIcons, binaries?`,
+                              `Cleanup`,
+                              {
+                                type: 'warning',
+                              },
+                            )
+                            .then(async () => {
                               await maintenanceDatabase({cleanup: true})
                               window.$message.success(`Database cleanup success!`)
 
                               globalEventBus.emit(GlobalEvents.CLOSE_DATABASE)
                               mVisible.value = false
-                            },
-                            onNegativeClick: () => {},
-                          })
+                            })
+                            .catch()
                         },
                       },
                       {

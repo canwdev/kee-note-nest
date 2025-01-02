@@ -1,5 +1,17 @@
 <script setup lang="ts">
-const isSidebarExpand = ref(true)
+import {useVModel} from '@vueuse/core'
+
+const props = withDefaults(
+  defineProps<{
+    modelValue?: boolean
+  }>(),
+  {
+    modelValue: true,
+  },
+)
+const emit = defineEmits(['update:modelValue'])
+
+const isSidebarExpand = useVModel(props, 'modelValue', emit, {passive: true})
 </script>
 
 <template>

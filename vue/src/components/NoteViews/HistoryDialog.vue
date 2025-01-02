@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {h} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {getLocalStorageObject, LsKeys} from '@/enum'
-import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {Delete16Filled, History24Regular} from '@vicons/fluent'
 import {useSettingsStore} from '@/store/settings'
+import OptionUI from '@/components/CanUI/packages/OptionUI/index.vue'
+import {StOptionItem, StOptionType} from '@/components/CanUI/packages/OptionUI/enum'
 
 const props = withDefaults(
   defineProps<{
@@ -28,45 +28,38 @@ const removeHistoryItem = (index: number) => {
   list.splice(index, 1)
   settingsStore.historyList = list
 }
+
+const optionList = computed((): StOptionItem[] => {
+  return [
+    {
+      label: 'Enable History',
+      type: StOptionType.SWITCH,
+      store: settingsStore,
+      key: 'isSaveHistory',
+      children: (settingsStore.historyList || []).map((item, index) => {
+        return {
+          key: item.dbPath,
+          label: item.dbPath,
+          clickFn: () => {
+            emit('historyItemClick', item)
+          },
+          type: StOptionType.BUTTON,
+          props: {
+            class: 'mdi mdi-delete',
+            onClick: (event) => {
+              event.stopPropagation()
+              removeHistoryItem(index)
+            },
+          },
+        }
+      }),
+    },
+  ]
+})
 </script>
 
 <template>
   <el-dialog v-model="mVisible" title="History">
-    <n-list>
-      <n-list-item>
-        <n-thing title="Enable History" description="" />
-        <template #suffix>
-          <n-switch v-model:value="settingsStore.isSaveHistory" />
-        </template>
-      </n-list-item>
-      <n-list-item v-if="settingsStore.isSaveHistory">
-        <n-list
-          v-if="settingsStore.historyList && settingsStore.historyList.length"
-          bordered
-          hoverable
-          clickable
-        >
-          <n-list-item
-            v-for="(item, index) in settingsStore.historyList"
-            :key="item.dbPath"
-            @click="$emit('historyItemClick', item)"
-          >
-            <n-thing :description="item.dbPath" />
-            <template #suffix>
-              <n-popconfirm @positive-click="removeHistoryItem(index)">
-                <template #trigger>
-                  <n-button @click.stop title="Delete history" type="error" quaternary>
-                    <n-icon size="20">
-                      <Delete16Filled />
-                    </n-icon>
-                  </n-button>
-                </template>
-                Confirm remove this history?
-              </n-popconfirm>
-            </template>
-          </n-list-item>
-        </n-list>
-      </n-list-item>
-    </n-list>
+    <OptionUI :option-list="optionList" />
   </el-dialog>
 </template>
